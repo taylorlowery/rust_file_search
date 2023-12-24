@@ -1,6 +1,7 @@
 use clap::Parser;
 use std::error::Error;
-use std::fs;
+use std::ffi::OsStr;
+use std::fs::{self};
 use std::path::PathBuf;
 // get command line args that should be a path
 // if that path exists,
@@ -41,7 +42,16 @@ pub fn walk_files(
                     matches.append(&mut walk_files(&path, recursive, filetype.clone()).unwrap())
                 }
             }
-            false => matches.push(path),
+            // if filetype is defined, only add the specified type
+            false => match &filetype {
+                None => matches.push(path),
+                Some(filetype) => {
+                    let filetype = OsStr::new(&filetype);
+                    if path.extension().unwrap() == filetype {
+                        matches.push(path)
+                    }
+                }
+            },
         }
     }
 
