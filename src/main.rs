@@ -35,7 +35,12 @@ pub fn walk_files(
         let entry = entry?;
         let path = entry.path();
         match path.is_dir() {
-            true => matches.append(&mut walk_files(&path, recursive, filetype.clone()).unwrap()),
+            true => {
+                // only search through sub-directories if recursive
+                if recursive == true {
+                    matches.append(&mut walk_files(&path, recursive, filetype.clone()).unwrap())
+                }
+            }
             false => matches.push(path),
         }
     }
