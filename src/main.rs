@@ -1,10 +1,5 @@
 use clap::Parser;
 use std::path::PathBuf;
-// get command line args that should be a path
-// if that path exists,
-// if that path is a directory, get all files in that directory
-// optionally that search should be recursive
-// optionally let the user provide file extension and only return those results
 
 mod file_search;
 
