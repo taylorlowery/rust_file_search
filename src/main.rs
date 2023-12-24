@@ -76,7 +76,8 @@ mod file_search {
         #[case(false, None, 2)]
         #[case(false, Some(String::from("mp3")), 1)]
         #[case(true, Some(String::from("mp3")), 2)]
-        fn it_works(
+        #[case(true, Some(String::from("jpg")), 0)]
+        fn test_walk_files(
             path_to_test_files: PathBuf,
             #[case] recursive: bool,
             #[case] file_type: Option<String>,
@@ -84,6 +85,13 @@ mod file_search {
         ) {
             let results = walk_files(&path_to_test_files, recursive, file_type);
             assert_eq!(expected, results.unwrap().len());
+        }
+
+        #[rstest]
+        #[should_panic]
+        fn test_walk_files_invalid_path() {
+            let results = walk_files(&PathBuf::from("INVALID_PATH"), false, None);
+            assert_eq!(10, results.unwrap().len());
         }
     }
 }
