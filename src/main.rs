@@ -24,6 +24,7 @@ mod file_search {
     use std::ffi::OsStr;
     use std::fs::{self};
     use std::path::PathBuf;
+
     pub fn walk_files(
         path: &PathBuf,
         recursive: bool,
@@ -58,6 +59,32 @@ mod file_search {
         }
 
         Ok(matches)
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::*;
+        use rstest::*;
+
+        #[fixture]
+        pub fn path_to_test_files() -> PathBuf {
+            PathBuf::from("./test_files")
+        }
+
+        #[rstest]
+        #[case(true, None, 4)]
+        #[case(false, None, 2)]
+        #[case(false, Some(String::from("mp3")), 1)]
+        #[case(true, Some(String::from("mp3")), 2)]
+        fn it_works(
+            path_to_test_files: PathBuf,
+            #[case] recursive: bool,
+            #[case] file_type: Option<String>,
+            #[case] expected: usize,
+        ) {
+            let results = walk_files(&path_to_test_files, recursive, file_type);
+            assert_eq!(expected, results.unwrap().len());
+        }
     }
 }
 
